@@ -201,9 +201,13 @@ const connectToRoom = (roomId: string) => {
       commandManager.execute = async (command: Command): Promise<void> => {
         await originalExecute(command);
         
+console.log('🔍 命令执行:', (command as any).constructor.name, 'isReceivingRemote:', isReceivingRemote,
+  'wsState:', ws?.readyState);
+
         if (!isReceivingRemote && ws?.readyState === WebSocket.OPEN) {
           // 序列化命令数据
           const commandData = serializeCommand(command, editor.value!);
+          console.log('🔍 序列化结果:', commandData);
           if (commandData) {
             console.log('📤 发送命令:', commandData.type);
             ws.send(JSON.stringify({
