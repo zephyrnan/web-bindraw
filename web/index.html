@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue3 应用</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // 拦截 Tailwind CDN 的生产环境警告（仅用于开发环境）
+    const originalWarn = console.warn;
+    console.warn = function(...args) {
+      const msg = args[0];
+      if (typeof msg === 'string' && msg.includes('cdn.tailwindcss.com should not be used in production')) {
+        return; // 忽略此警告
+      }
+      originalWarn.apply(console, args);
+    };
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
