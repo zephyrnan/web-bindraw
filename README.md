@@ -3,6 +3,11 @@
 > 专业级图形编辑器 + 实时多人协同 | Vue 3 + TypeScript + Canvas + WebSocket
 
 <p align="center">
+  <a href="https://web-bindraw.vercel.app" target="_blank">🔗 在线演示</a> •
+  <a href="https://github.com/zephyrnan/web-bindraw" target="_blank">📦 GitHub</a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Vue-3.5.17-brightgreen" alt="Vue">
   <img src="https://img.shields.io/badge/TypeScript-5.8-blue" alt="TypeScript">
   <img src="https://img.shields.io/badge/Node.js-20_LTS-green" alt="Node.js">
