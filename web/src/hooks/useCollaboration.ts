@@ -2,6 +2,7 @@ import { ref, onMounted, onUnmounted, watch, type Ref } from 'vue';
 import type { Editor } from '@/core';
 import { AddShapeCommand } from '@/core/commands';
 import { createShapeFromJSON } from '@/core/shapes';
+import { getWebSocketUrl } from '@/config/websocket';
 
 export function useCollaboration(editorRef: Ref<Editor | null>, roomId: string = 'default-room') {
   const isConnected = ref(false);
@@ -16,7 +17,9 @@ export function useCollaboration(editorRef: Ref<Editor | null>, roomId: string =
     const editor = editorRef.value;
     if (!editor) return;
 
-    ws = new WebSocket('ws://localhost:3000');
+    const wsUrl = getWebSocketUrl();
+    console.log('🔌 连接 WebSocket:', wsUrl);
+    ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
       console.log('✅ WebSocket 连接成功');
