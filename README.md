@@ -238,13 +238,6 @@ npm run dev             # 开发模式（自动重启）
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
 5. 开启 Pull Request
 
-## 📄 License
-
-MIT License - 详见 [LICENSE](LICENSE) 文件
-
-## 👨‍💻 作者
-
-Your Name - [@YourGitHub](https://github.com/yourusername)
 
 ## 🙏 致谢
 
