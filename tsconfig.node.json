@@ -1,0 +1,11 @@
+{
+  "extends": "./web/tsconfig.node.json",
+  "include": [
+    "web/vite.config.*",
+    "web/vitest.config.*",
+    "web/cypress.config.*",
+    "web/nightwatch.conf.*",
+    "web/playwright.config.*",
+    "web/eslint.config.*"
+  ]
+}
