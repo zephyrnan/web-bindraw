@@ -325,19 +325,27 @@ console.log('🔍 命令执行:', (command as any).constructor.name, 'isReceivin
 
 // 序列化命令
 const serializeCommand = (command: Command, editorInstance: any): SerializedCommand | null => {
-  const commandName = (command as any).constructor.name;
+  const commandName = (command as any).name || (command as any).constructor.name;
+  console.log('🔍 命令名称:', commandName);
   
   switch (commandName) {
-    case 'AddShapeCommand': {
-      const shapes = editorInstance.scene.getShapes();
-      const shape = shapes[shapes.length - 1];
-      const serializedShape = serializeShape(shape);
-      if (!serializedShape) return null;
-      return {
-        type: 'add-shape',
-        shape: serializedShape
-      };
+     case 'AddShape':        // 使用 command.name
+  case 'AddShapeCommand': // 使用 constructor.name (开发环境)
+  {
+    // 直接从命令对象获取 shape
+    const shape = (command as any).shape;
+    if (!shape) {
+      console.warn('⚠️ AddShapeCommand 没有 shape');
+      return null;
     }
+    const serializedShape = serializeShape(shape);
+    if (!serializedShape) return null;
+    return {
+      type: 'add-shape',
+      shape: serializedShape
+    };
+  }
+    case 'RemoveShape':
     case 'RemoveShapeCommand': {
       const shapeId = (command as any).shape?.id;
       if (!shapeId) return null;
