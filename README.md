@@ -37,7 +37,7 @@ npm run dev
 cd server
 npm install
 npm run dev
-# WebSocket ���务器: ws://localhost:3000
+# WebSocket 服务器: ws://localhost:3000
 ```
 
 ### 完整环境
@@ -134,7 +134,7 @@ web协同画板/
 ### 详细文档
 - **[开发历程](docs/开发历程.md)** - 完整的开发过程和问题修复
 - **[架构设计](docs/架构设计.md)** - 前后端架构、数据流设计
-- **[设计模式](docs/设计模式.md)** - 策略、命令、发布-订阅、��厂模式
+- **[设计模式](docs/设计模式.md)** - 策略、命令、发布-订阅、工厂模式
 
 ### 前后端文档
 - **[前端文档](web/README.md)** - 前端完整开发文档
