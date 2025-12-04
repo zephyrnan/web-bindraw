@@ -13,6 +13,53 @@ export function useCollaboration(editorRef: Ref<Editor | null>, roomId: string =
   const userColor = `#${Math.floor(Math.random()*16777215).toString(16)}`;
   let isReceivingRemoteChange = false;
 
+  // 心跳和重连相关
+  let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
+  let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  let reconnectAttempts = 0;
+  const maxReconnectAttempts = 10;
+  const heartbeatInterval = 25000; // 25秒发送一次心跳
+  const reconnectInterval = 3000; // 3秒后重连
+
+  // 开始心跳
+  const startHeartbeat = () => {
+    stopHeartbeat();
+    heartbeatTimer = setInterval(() => {
+      if (ws?.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'ping', userId, roomId, timestamp: Date.now() }));
+        console.log('💓 心跳');
+      }
+    }, heartbeatInterval);
+  };
+
+  // 停止心跳
+  const stopHeartbeat = () => {
+    if (heartbeatTimer) {
+      clearInterval(heartbeatTimer);
+      heartbeatTimer = null;
+    }
+  };
+
+  // 自动重连
+  const scheduleReconnect = () => {
+    if (reconnectAttempts >= maxReconnectAttempts) {
+      console.error('❌ 达到最大重连次数');
+      return;
+    }
+    reconnectAttempts++;
+    console.log(`🔄 ${reconnectInterval / 1000}秒后重连 (${reconnectAttempts}/${maxReconnectAttempts})`);
+    reconnectTimer = setTimeout(() => {
+      if (!isConnected.value) connect();
+    }, reconnectInterval);
+  };
+
+  const clearReconnectTimer = () => {
+    if (reconnectTimer) {
+      clearTimeout(reconnectTimer);
+      reconnectTimer = null;
+    }
+  };
+
   const connect = () => {
     const editor = editorRef.value;
     if (!editor) return;
@@ -23,6 +70,9 @@ export function useCollaboration(editorRef: Ref<Editor | null>, roomId: string =
 
     ws.onopen = () => {
       console.log('✅ WebSocket 连接成功');
+      startHeartbeat(); // 在发送 join 消息之前
+      reconnectAttempts = 0;
+      clearReconnectTimer();
       isConnected.value = true;
 
       // 发送加入房间消息
@@ -74,6 +124,10 @@ export function useCollaboration(editorRef: Ref<Editor | null>, roomId: string =
             break;
 
           case 'command':
+            // 忽略自己发送的消息
+            if (message.userId === userId) {
+              return;
+            }
             console.log('🎨 收到远程操作:', message.data);
             handleRemoteCommand(message.data);
             break;
@@ -89,6 +143,8 @@ export function useCollaboration(editorRef: Ref<Editor | null>, roomId: string =
 
     ws.onclose = () => {
       console.log('🔌 WebSocket 断开');
+      stopHeartbeat();
+      scheduleReconnect(); // 自动重连
       isConnected.value = false;
     };
   };
@@ -230,7 +286,10 @@ export function useCollaboration(editorRef: Ref<Editor | null>, roomId: string =
   onUnmounted(() => {
     if (ws) {
       ws.close();
+      
     }
+    stopHeartbeat();
+    clearReconnectTimer();
   });
 
   return {
